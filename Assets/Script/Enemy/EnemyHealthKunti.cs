@@ -13,6 +13,7 @@ public class EnemyHealtkunti : MonoBehaviour
     private Color originalColor;
 
     private NavMeshAgent agent;
+    
 
     void Start()
     {

@@ -9,6 +9,7 @@ public class EnemyHealth : MonoBehaviour
     public float flashDuration = 0.1f;
 
     private bool isHit = false;
+    private bool isDead = false;
     private Renderer[] enemyRenderers; // Changed from single Renderer to an array of Renderers
     private Color originalColor;
 
@@ -24,13 +25,20 @@ public class EnemyHealth : MonoBehaviour
             originalColor = enemyRenderers[0].material.color;
 
         agent = GetComponent<NavMeshAgent>();
-
+        VictoryManager.Instance.RegisterEnemy();
     }
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         health -= amount;
         CameraShakeController.Instance?.ShakeCamera(1f, 0.3f);
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayRandomHurt(false, 0.2f); // false = enemy
+        }
+
 
         if (!isHit)
             StartCoroutine(HitFlashRoutine());
@@ -64,6 +72,9 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        if (isDead) { return; }
+        isDead = true;
+        VictoryManager.Instance.EnemyDied();
         Destroy(gameObject);
     }
 }

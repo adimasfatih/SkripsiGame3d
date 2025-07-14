@@ -8,15 +8,15 @@ public class PlayerSkill : MonoBehaviour
     private bool canUseSkill = true;
 
     public Animator animator;
-    public SkillBar skillBar;
+
 
 
     void Start()
     {
-        if (skillBar != null)
+        if (SkillBar.Instance != null)
         {
-            skillBar.SetMaxCooldown(skillCooldown);
-            skillBar.SetCooldown(0); // Skill is ready at start
+            SkillBar.Instance.SetMaxCooldown(skillCooldown);
+            SkillBar.Instance.SetCooldown(0); // Skill is ready at start
         }
     }
 
@@ -31,9 +31,9 @@ public class PlayerSkill : MonoBehaviour
         if (!canUseSkill)
         {
             cooldownTimer += Time.deltaTime;
-            if (skillBar != null)
+            if (SkillBar.Instance != null)
             {
-                skillBar.SetCooldown(skillCooldown - cooldownTimer);
+                SkillBar.Instance.SetCooldown(skillCooldown - cooldownTimer);
             } // Update UI to count down
 
 
@@ -41,9 +41,9 @@ public class PlayerSkill : MonoBehaviour
             {
                 cooldownTimer = 0f;
                 canUseSkill = true;
-                if (skillBar != null)
+                if (SkillBar.Instance != null)
                 {
-                    skillBar.SetCooldown(0f);
+                    SkillBar.Instance.SetCooldown(0f);
                 }
             }
         }
@@ -56,8 +56,8 @@ public class PlayerSkill : MonoBehaviour
         {
             animator.SetTrigger("Skill"); // Animation will call TriggerAOEBlast via event
         }
-        if (skillBar != null) { 
-            skillBar.SetCooldown(skillCooldown);
+        if (SkillBar.Instance != null) { 
+            SkillBar.Instance.SetCooldown(skillCooldown);
         }
 
     }

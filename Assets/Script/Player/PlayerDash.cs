@@ -6,7 +6,6 @@ public class PlayerDash : MonoBehaviour
     PlayerMovement moveScript;
     public float dashSpeed;
     public float dashTime;
-    public DodgeBar dodgeBar;
     private bool canDash = true;
     public float dashCooldown = 2f;
     private float currentCooldown = 0f;
@@ -17,9 +16,9 @@ public class PlayerDash : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         moveScript = GetComponent<PlayerMovement>();
-        if (dodgeBar != null)
+        if (DodgeBar.Instance != null)
         {
-            dodgeBar.SetMaxCooldown(dashCooldown);
+            DodgeBar.Instance.SetMaxCooldown(dashCooldown);
         }
 
     }
@@ -36,16 +35,17 @@ public class PlayerDash : MonoBehaviour
             moveScript.UpdateAnimationState();
         }
 
-        if (!canDash && dodgeBar != null)
+        if (!canDash && DodgeBar.Instance != null)
         {
             currentCooldown += Time.deltaTime;
-            dodgeBar.SetCooldown(currentCooldown);
+            DodgeBar.Instance.SetCooldown(currentCooldown);
         }
     }
 
     IEnumerator Dash()
     {
         {
+            SoundManager.Instance.PlayDodgeSFX();
             canDash = false;
             isDashing = true;
             currentCooldown = 0f;
@@ -78,8 +78,8 @@ public class PlayerDash : MonoBehaviour
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
             currentCooldown = dashCooldown;
-            if (dodgeBar != null)
-                dodgeBar.SetCooldown(dashCooldown);
+            if (DodgeBar.Instance != null)
+                DodgeBar.Instance.SetCooldown(dashCooldown);
         }
     }
 }

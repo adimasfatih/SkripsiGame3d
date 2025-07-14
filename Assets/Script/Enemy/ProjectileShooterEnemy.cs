@@ -149,6 +149,7 @@ public class ProjectileShooterEnemy : MonoBehaviour
             {
                 projectile.SetDirection(direction);
             }
+            SoundManager.Instance.PlayAttackKunti();
         }
     }
 

@@ -57,18 +57,44 @@ public class PlayerMovement : MonoBehaviour
 
     public void MovePlayer()
     {
-        if (IsPlayingAttackAnimation()|| IsPlayingSkillAnimation())
+        //if (IsPlayingAttackAnimation()|| IsPlayingSkillAnimation())
+        //{
+        //     moveDirection = Vector3.zero;
+        //     return;
+        //  }
+
+        // moveDirection.Set(inputManager.Movement.x, 0f , inputManager.Movement.y);
+
+        //if (moveDirection != Vector3.zero)
+        // {
+        //    controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+        //    
+        //}
+
+        if (IsPlayingAttackAnimation() || IsPlayingSkillAnimation())
         {
             moveDirection = Vector3.zero;
             return;
         }
 
-        moveDirection.Set(inputManager.Movement.x, 0f , inputManager.Movement.y);
+        // Get input
+        Vector3 input = new Vector3(inputManager.Movement.x, 0f, inputManager.Movement.y).normalized;
 
+        // Get camera-relative directions
+        Vector3 camForward = Camera.main.transform.forward;
+        Vector3 camRight = Camera.main.transform.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        // Calculate movement direction
+        moveDirection = camForward * input.z + camRight * input.x;
+
+        // Move
         if (moveDirection != Vector3.zero)
         {
             controller.Move(moveDirection * moveSpeed * Time.deltaTime);
-            
         }
     }
 
@@ -96,12 +122,29 @@ public class PlayerMovement : MonoBehaviour
 
     public void UpdateAnimationState()
     {
-        
+        //Vector3 input = new Vector3(inputManager.Movement.x, 0f, inputManager.Movement.y).normalized;
+
+        // Convert input direction to local space
+        //Vector3 localInput = transform.InverseTransformDirection(input);
+
+        //animator.SetFloat("MoveX", localInput.x, 0.1f, Time.deltaTime);
+        //animator.SetFloat("MoveZ", localInput.z, 0.1f, Time.deltaTime);
 
         Vector3 input = new Vector3(inputManager.Movement.x, 0f, inputManager.Movement.y).normalized;
 
-        // Convert input direction to local space
-        Vector3 localInput = transform.InverseTransformDirection(input);
+        // Camera-relative input
+        Vector3 camForward = Camera.main.transform.forward;
+        Vector3 camRight = Camera.main.transform.right;
+
+        camForward.y = 0;
+        camRight.y = 0;
+
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 worldInput = camForward * input.z + camRight * input.x;
+
+        Vector3 localInput = transform.InverseTransformDirection(worldInput);
 
         animator.SetFloat("MoveX", localInput.x, 0.1f, Time.deltaTime);
         animator.SetFloat("MoveZ", localInput.z, 0.1f, Time.deltaTime);

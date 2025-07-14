@@ -89,25 +89,33 @@ public class enemyBehavior : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("IsWalking", true);
+            isPreparingAttack = false;
+            isAttacking = false;
         }
         if (distance > detectionRange + 2f) // buffer to return to patrol
         {
             currentState = State.Patrol;
             GoToNextPatrolPoint();
+            isPreparingAttack = false;
+            isAttacking = false;
         }
         else if (distance <= attackRange)
         {
+            if (animator != null)
+            {
+                animator.SetBool("IsWalking", false);
+            }
             agent.isStopped = true;
             currentState = State.Attack;
 
-            if (animator != null) { 
-                animator.SetBool("IsWalking", false);
-            }
         }
     }
 
     void Attack(float distance)
     {
+        if (isAttacking) return;
+
+
         // Face the player (optional)
         transform.LookAt(player);
 
@@ -130,6 +138,7 @@ public class enemyBehavior : MonoBehaviour
                 isPreparingAttack = true;
                 if (animator != null)
                 {
+                    animator.SetBool("IsWalking", false);
                     animator.SetTrigger("Attack");
                    
                 }

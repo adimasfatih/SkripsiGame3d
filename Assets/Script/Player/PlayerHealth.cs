@@ -5,19 +5,23 @@ public class PlayerHealth : MonoBehaviour
     public bool isInvincible = false;
     public int maxHealth = 100;
     public int currentHealth;
-    public HealthBar healthBar;
 
     void Start()
     {
         currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        HealthBar.Instance.SetMaxHealth(maxHealth);
+        
     }
 
     public void TakeDamage(int amount)
     {
         if (isInvincible) { return; }
         currentHealth -= amount;
-        healthBar.setHealth(currentHealth);
+        HealthBar.Instance.SetHealth(currentHealth);
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayRandomHurt(true, 1f); // true = player
+        }
         Debug.Log("Player took damage! Current health: " + currentHealth);
 
         if (currentHealth <= 0)
@@ -29,6 +33,10 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died!");
+        if (DeathManager.Instance != null)
+        {
+            DeathManager.Instance.PlayerDied();
+        }
         gameObject.SetActive(false);
     }
 
